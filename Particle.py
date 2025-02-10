@@ -78,6 +78,21 @@ class Particle:
         self.x_pos += self.x_vel
         self.y_pos += self.y_vel
 
+        # bounce off walls
+        if self.x_pos < 0:
+            self.x_pos = 0
+            self.x_vel = -self.x_vel
+        if self.x_pos > self.sim_width:
+            self.x_pos = self.sim_width
+            self.x_vel = -self.x_vel
+        if self.y_pos < 0:
+            self.y_pos = 0
+            self.y_vel = -self.y_vel
+        if self.y_pos > self.sim_height:
+            self.y_pos = self.sim_height
+            self.y_vel = -self.y_vel
+
+    def orbital(self):
         # keep electron far enough away from the nucleus
         #print(f"{self.type=} {self.closest_nucleus=}" )
         if self.type == 'e' and self.closest_nucleus != None:
@@ -95,20 +110,6 @@ class Particle:
                     self.x_pos = self.closest_nucleus.x_pos - dist_to_nucleus_x
                     self.y_pos = self.closest_nucleus.y_pos - dist_to_nucleus_y
                     #print(f"{min_distance_factor=} {dist_to_nucleus_x=} {dist_to_nucleus_y=}" )
-
-        # bounce off walls
-        if self.x_pos < 0:
-            self.x_pos = 0
-            self.x_vel = -self.x_vel
-        if self.x_pos > self.sim_width:
-            self.x_pos = self.sim_width
-            self.x_vel = -self.x_vel
-        if self.y_pos < 0:
-            self.y_pos = 0
-            self.y_vel = -self.y_vel
-        if self.y_pos > self.sim_height:
-            self.y_pos = self.sim_height
-            self.y_vel = -self.y_vel
 
     def accel(self, x, y):
         self.x_acc += x

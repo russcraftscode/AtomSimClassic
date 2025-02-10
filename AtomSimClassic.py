@@ -9,8 +9,8 @@ root.title("Particles in Classical Mechanics")
 # build the canvas
 canvas_width = 800
 canvas_height = 600
-electron_count = 30
-proton_count = 10
+electron_count = 50
+proton_count = 50
 neutron_count = 10
 canvas = tk.Canvas(root, width=canvas_width, height=canvas_height, bg='white')
 canvas.pack()
@@ -41,7 +41,7 @@ for p in range(electron_count, proton_count + electron_count):
     particles[-1].y_vel = random.randint(-2,2)
     id += 1
 
-for p in range(electron_count, proton_count + electron_count):
+for p in range(proton_count + electron_count, proton_count + electron_count + neutron_count):
     particles.append(Particle.Particle(id, 'n',
                                        canvas.create_oval(50, 50, 100, 100, fill='Yellow'),
                                        canvas_width,
@@ -92,7 +92,7 @@ def em_interact(p_a, p_b):
             p_b.accel(p_b_x_vector, p_b_y_vector)
 
 
-def move_circles():
+def move_particles():
     # global p1, p2
 
     # find all nuclei
@@ -107,9 +107,14 @@ def move_circles():
         if p.type == 'e':
             p.find_closes_nucleus(nuclei)
 
+    # solve EM interations
     for p_a in particles:
         for p_b in particles:
             em_interact(p_a, p_b)
+
+    # solve orbitals
+    for p in particles:
+        p.orbital()
 
     for p in particles:
         p.move()
@@ -118,8 +123,8 @@ def move_circles():
         p.reset()
 
     # TODO replace prototyping execution of next frame
-    root.after(20, move_circles)
+    root.after(20, move_particles)
 
 
-move_circles()
+move_particles()
 root.mainloop()
