@@ -9,7 +9,9 @@ root.title("Particles in Classical Mechanics")
 
 # build the canvas
 canvas_width = 1000
-canvas_height = 1000
+canvas_height = 800
+electron_count = 5
+proton_count = 5
 canvas = tk.Canvas(root, width=canvas_width, height=canvas_height, bg='white')
 canvas.pack()
 
@@ -20,23 +22,23 @@ canvas.pack()
 
 particles = []
 
-for id in range(10):
+for id in range(electron_count):
     particles.append(Particle.Electron(id,
                                        canvas.create_oval(50, 50, 100, 100, fill='blue'),
                                        canvas_width,
                                        canvas_height))
     particles[-1].x_pos = canvas_width/2 + (random.random()-.5) * 300
     particles[-1].y_pos = canvas_height/2 + (random.random()-.5) * 300
-    particles[-1].x_vel = random.random()
-    particles[-1].y_vel = random.random()
+    particles[-1].x_vel = 0 # random.random()
+    particles[-1].y_vel = 0 # random.random()
 
-for id in range(10,13):
+for id in range(electron_count, proton_count+electron_count):
     particles.append(Particle.Proton(id,
                                        canvas.create_oval(50, 50, 100, 100, fill='Red'),
                                        canvas_width,
                                        canvas_height))
-    particles[-1].x_pos = canvas_width/2 + (random.random()-.5) * 300
-    particles[-1].y_pos = canvas_height/2 + (random.random()-.5) * 300
+    particles[-1].x_pos = canvas_width/2 + (random.random()-.5) * 400
+    particles[-1].y_pos = canvas_height/2 + (random.random()-.5) * 400
     particles[-1].x_vel = 0
     particles[-1].y_vel = 0
 
@@ -80,37 +82,45 @@ def em_interact(p_a, p_b):
         force = 0
         if distance > 0:
             force = (p_a.electric_charge * p_b.electric_charge) / pow(distance, 2)
+            # calc total acceleration on the particles
+            p_a_accel = force/p_a.mass
+            p_b_accel = force / p_b.mass
+            #print(f"{distance=} a {p_a_accel} b {p_b_accel}") # DEBUG
+            # break down acceleration in x,y vectors
+            p_a_x_vector = 0
+            p_b_x_vector = 0
+            p_b_y_vector = 0
 
-        # calc total acceleration on the particles
-        p_a_accel = force/p_a.mass
-        p_b_accel = force / p_b.mass
-        #print(f"{distance=} a {p_a_accel} b {p_b_accel}") # DEBUG
-        # break down acceleration in x,y vectors
-        p_a_x_vector = 0
-        p_b_x_vector = 0
-        p_b_y_vector = 0
-
-        if (p_a.x_pos > p_b.x_pos):
-            p_a_x_vector = (dist_x/distance) * p_a_accel
-            p_b_x_vector = -(dist_x/distance) * p_b_accel
-        else:
-            p_a_x_vector = -(dist_x/distance) * p_a_accel
-            p_b_x_vector = (dist_x/distance) * p_b_accel
-        if (p_a.y_pos > p_b.y_pos):
-            p_a_y_vector = (dist_y/distance) * p_a_accel
-            p_b_y_vector = -(dist_y/distance) * p_b_accel
-        else:
-            p_a_y_vector = -(dist_y/distance) * p_a_accel
-            p_b_y_vector = (dist_y/distance) * p_b_accel
-        # apply acceleration
-        p_a.accel(p_a_x_vector, p_a_y_vector )
-        p_b.accel(p_b_x_vector, p_b_y_vector)
+            if (p_a.x_pos > p_b.x_pos):
+                p_a_x_vector = (dist_x/distance) * p_a_accel
+                p_b_x_vector = -(dist_x/distance) * p_b_accel
+            else:
+                p_a_x_vector = -(dist_x/distance) * p_a_accel
+                p_b_x_vector = (dist_x/distance) * p_b_accel
+            if (p_a.y_pos > p_b.y_pos):
+                p_a_y_vector = (dist_y/distance) * p_a_accel
+                p_b_y_vector = -(dist_y/distance) * p_b_accel
+            else:
+                p_a_y_vector = -(dist_y/distance) * p_a_accel
+                p_b_y_vector = (dist_y/distance) * p_b_accel
+            # apply acceleration
+            p_a.accel(p_a_x_vector, p_a_y_vector )
+            p_b.accel(p_b_x_vector, p_b_y_vector)
 def move_circles():
     #global p1, p2
 
     for p_a in particles:
         for p_b in particles:
             em_interact(p_a, p_b)
+
+    for e in range (electron_count):
+        closest_range = 1000000
+        for p in range (electron_count, proton_count + electron_count):
+            current_range = math.sqrt((particles[p].x_pos-particles[e].x_pos)**2 + (particles[p].y_pos-particles[e].y_pos)**2)
+            if current_range < closest_range:
+                closest_range = current_range
+                particles[e].closest_nucleus_x = particles[p].x_pos
+                particles[e].closest_nucleus_y = particles[p].y_pos
 
     for p in particles:
         p.move()
