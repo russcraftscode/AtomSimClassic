@@ -7,11 +7,11 @@ root = tk.Tk()
 root.title("Particles in Classical Mechanics")
 
 # build the canvas
-canvas_width = 800
+canvas_width = 600
 canvas_height = 600
-electron_count = 50
-proton_count = 50
-neutron_count = 10
+electron_count = 0
+proton_count = 0
+neutron_count = 0
 canvas = tk.Canvas(root, width=canvas_width, height=canvas_height, bg='white')
 canvas.pack()
 
@@ -35,10 +35,10 @@ for p in range(electron_count, proton_count + electron_count):
                                        canvas.create_oval(50, 50, 100, 100, fill='Red'),
                                        canvas_width,
                                        canvas_height))
-    particles[-1].x_pos = canvas_width / 2 + (random.random() - .5) * 400
-    particles[-1].y_pos = canvas_height / 2 + (random.random() - .5) * 400
-    particles[-1].x_vel = random.randint(-2,2)
-    particles[-1].y_vel = random.randint(-2,2)
+    particles[-1].x_pos = canvas_width / 2 + (random.random() - .5) * 50
+    particles[-1].y_pos = canvas_height / 2 + (random.random() - .5) * 50
+    #particles[-1].x_vel = random.randint(-2,2)
+    #particles[-1].y_vel = random.randint(-2,2)
     id += 1
 
 for p in range(proton_count + electron_count, proton_count + electron_count + neutron_count):
@@ -51,6 +51,28 @@ for p in range(proton_count + electron_count, proton_count + electron_count + ne
     particles[-1].x_vel = random.randint(-2,2)
     particles[-1].y_vel = random.randint(-2,2)
     id += 1
+
+if True:
+    particles.append(Particle.Particle(id, 'p', canvas.create_oval(50, 50, 100, 100, fill='Red'), canvas_width, canvas_height))
+    particles[-1].x_pos = 300
+    particles[-1].y_pos = 300
+    id += 1
+
+    particles.append(Particle.Particle(id, 'p',canvas.create_oval(50, 50, 100, 100, fill='Red'), canvas_width, canvas_height))
+    particles[-1].x_pos = 350
+    particles[-1].y_pos = 350
+    id += 1
+
+    particles.append(Particle.Particle(id, 'e', canvas.create_oval(50, 50, 100, 100, fill='blue'), canvas_width, canvas_height))
+    particles[-1].x_pos = 300
+    particles[-1].y_pos = 350
+    id += 1
+
+    particles.append(Particle.Particle(id, 'e',canvas.create_oval(50, 50, 100, 100, fill='blue'), canvas_width, canvas_height))
+    particles[-1].x_pos = 310
+    particles[-1].y_pos = 340
+    id += 1
+
 
 
 def em_interact(p_a, p_b):
@@ -72,6 +94,7 @@ def em_interact(p_a, p_b):
             # print(f"{distance=} a {p_a_accel} b {p_b_accel}") # DEBUG
             # break down acceleration in x,y vectors
             p_a_x_vector = 0
+            p_b_x_vector = 0
             p_b_x_vector = 0
             p_b_y_vector = 0
 

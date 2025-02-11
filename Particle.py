@@ -65,6 +65,8 @@ class Particle:
 
     def move(self):
         MAX_SPEED = 5
+        if self.type == 'p' or self.type == 'n':
+            MAX_SPEED = 2
         self.x_vel += self.x_acc
         self.y_vel += self.y_acc
 
