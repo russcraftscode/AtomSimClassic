@@ -1,5 +1,7 @@
 import math
 
+MAX_SPEED = 5
+
 class Nucleus:
     def __init__(self, x, y ):
         self.x_pos = x
@@ -25,7 +27,7 @@ class Particle:
             self.energy_level = 0
 
         if type == "e": # neutron
-            self.radius = 1
+            self.radius = 3
             self.mass = .001
             self.electric_charge = -1
             self.strong_charge = 0
@@ -64,11 +66,14 @@ class Particle:
                     self.closest_nucleus = n
 
     def move(self):
-        MAX_SPEED = 5
-        if self.type == 'p' or self.type == 'n':
-            MAX_SPEED = 2
+        #MAX_SPEED = 5
+        #if self.type == 'p' or self.type == 'n':
+        #    MAX_SPEED = 2
+        if self.x_acc > MAX_SPEED: self.x_acc = MAX_SPEED
+        if self.y_acc > MAX_SPEED: self.y_acc = MAX_SPEED
         self.x_vel += self.x_acc
         self.y_vel += self.y_acc
+
 
         # keep under max speed
         speed = math.sqrt(self.x_vel ** 2 + self.y_vel ** 2)

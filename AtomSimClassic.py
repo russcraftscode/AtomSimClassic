@@ -6,53 +6,74 @@ import Particle
 root = tk.Tk()
 root.title("Particles in Classical Mechanics")
 
-# build the canvas
-canvas_width = 600
-canvas_height = 600
-electron_count = 0
-proton_count = 0
-neutron_count = 0
-canvas = tk.Canvas(root, width=canvas_width, height=canvas_height, bg='white')
-canvas.pack()
-
-particles = []
-nuclei = []
-
-id = 0;
-for p in range(electron_count):
-    particles.append(Particle.Particle(id, 'e',
-                                       canvas.create_oval(50, 50, 100, 100, fill='blue'),
-                                       canvas_width,
-                                       canvas_height))
-    particles[-1].x_pos = canvas_width / 2 + (random.random() - .5) * 300
-    particles[-1].y_pos = canvas_height / 2 + (random.random() - .5) * 300
-    particles[-1].x_vel =  random.randint(-2,2)
-    particles[-1].y_vel = random.randint(-2,2)
-    id += 1
-
-for p in range(electron_count, proton_count + electron_count):
+def add_proton():
+    global canvas
+    global particles
+    id = 0
+    if particles:
+        id = particles[-1].id
+        id += 1
     particles.append(Particle.Particle(id, 'p',
-                                       canvas.create_oval(50, 50, 100, 100, fill='Red'),
+                                       canvas.create_oval(-50, -50, -100, -100, fill='Red'),
                                        canvas_width,
                                        canvas_height))
     particles[-1].x_pos = canvas_width / 2 + (random.random() - .5) * 50
     particles[-1].y_pos = canvas_height / 2 + (random.random() - .5) * 50
-    #particles[-1].x_vel = random.randint(-2,2)
-    #particles[-1].y_vel = random.randint(-2,2)
-    id += 1
 
-for p in range(proton_count + electron_count, proton_count + electron_count + neutron_count):
-    particles.append(Particle.Particle(id, 'n',
-                                       canvas.create_oval(50, 50, 100, 100, fill='Yellow'),
+def add_electron():
+    global canvas
+    global particles
+    id = 0
+    if particles[0]:
+        id = particles[-1].id
+        id += 1
+    particles.append(Particle.Particle(id, 'e',
+                                       canvas.create_oval(-50, -50, -100, -100, fill='Blue'),
                                        canvas_width,
                                        canvas_height))
-    particles[-1].x_pos = canvas_width / 2 + (random.random() - .5) * 400
-    particles[-1].y_pos = canvas_height / 2 + (random.random() - .5) * 400
-    particles[-1].x_vel = random.randint(-2,2)
-    particles[-1].y_vel = random.randint(-2,2)
-    id += 1
+    particles[-1].x_pos = canvas_width / 2 + (random.random() - .5) * 50
+    particles[-1].y_pos = canvas_height / 2 + (random.random() - .5) * 50
 
-if True:
+def add_neutron():
+    global canvas
+    global particles
+    id = 0
+    if particles[0]:
+        id = particles[-1].id
+        id += 1
+    particles.append(Particle.Particle(id, 'n',
+                                       canvas.create_oval(-50, -50, -100, -100, fill='Yellow'),
+                                       canvas_width,
+                                       canvas_height))
+    particles[-1].x_pos = canvas_width / 2 + (random.random() - .5) * 50
+    particles[-1].y_pos = canvas_height / 2 + (random.random() - .5) * 50
+
+# make data field at top of window
+info_field = tk.Label(root, justify=tk.LEFT)
+info_field.grid(row=0, column=0, columnspan=5, sticky='w')
+
+# make canvas to display animation
+canvas_width = 800
+canvas_height = 500
+electron_count = 50
+proton_count = 0
+neutron_count = 0
+canvas = tk.Canvas(root, width=canvas_width, height=canvas_height, bg='white')
+#canvas.pack()
+canvas.grid(row=1,column=0, columnspan=5)
+
+# make buttons to add particles
+proton_button = tk.Button(root, text="Add Proton", command = add_proton)
+proton_button.grid(row = 2, column = 0)
+proton_button = tk.Button(root, text="Add Electron", command = add_electron)
+proton_button.grid(row = 3, column = 0)
+proton_button = tk.Button(root, text="Add Neutron", command = add_neutron)
+proton_button.grid(row = 4, column = 0)
+
+particles = []
+nuclei = []
+
+if False:
     particles.append(Particle.Particle(id, 'p', canvas.create_oval(50, 50, 100, 100, fill='Red'), canvas_width, canvas_height))
     particles[-1].x_pos = 300
     particles[-1].y_pos = 300
@@ -115,8 +136,20 @@ def em_interact(p_a, p_b):
             p_b.accel(p_b_x_vector, p_b_y_vector)
 
 
-def move_particles():
-    # global p1, p2
+def update_particles():
+    proton_count = 0
+    electron_count = 0
+    neutron_count = 0
+    for p in particles:
+        if p.type == 'p': proton_count += 1
+        if p.type == 'e': electron_count += 1
+        if p.type == 'n': neutron_count += 1
+    # TODO: Make this account for differing proton charges
+    total_charge = proton_count - electron_count
+    info_string = (f"Protons {proton_count}\nElectrons {electron_count}\n"
+                   f"Neutrons{neutron_count}\nTotal Charge {total_charge}\n")
+    global info_field
+    info_field.config(text=info_string)
 
     # find all nuclei
     global nuclei
@@ -130,7 +163,7 @@ def move_particles():
         if p.type == 'e':
             p.find_closes_nucleus(nuclei)
 
-    # solve EM interations
+    # solve EM interactions
     for p_a in particles:
         for p_b in particles:
             em_interact(p_a, p_b)
@@ -146,8 +179,11 @@ def move_particles():
         p.reset()
 
     # TODO replace prototyping execution of next frame
-    root.after(20, move_particles)
+    root.after(20, update_particles)
 
 
-move_particles()
+update_particles()
 root.mainloop()
+
+
+
