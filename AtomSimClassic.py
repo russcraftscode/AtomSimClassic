@@ -233,8 +233,8 @@ info_field = tk.Label(root, justify=tk.LEFT)
 info_field.grid(row=0, column=0, columnspan=5, sticky='w')
 
 # make canvas to display animation
-canvas_width = 2000
-canvas_height = 1000
+canvas_width = 800
+canvas_height = 500
 electron_count = 50
 proton_count = 0
 neutron_count = 0
@@ -266,26 +266,6 @@ orbital_toggle.grid(row=4, column=2)
 particles = []
 nuclei = []
 
-if False:
-    particles.append(Particle(id, 'p', canvas.create_oval(50, 50, 100, 100, fill='Red'), canvas_width, canvas_height))
-    particles[-1].x_pos = 300
-    particles[-1].y_pos = 300
-    id += 1
-
-    particles.append(Particle(id, 'p', canvas.create_oval(50, 50, 100, 100, fill='Red'), canvas_width, canvas_height))
-    particles[-1].x_pos = 350
-    particles[-1].y_pos = 350
-    id += 1
-
-    particles.append(Particle(id, 'e', canvas.create_oval(50, 50, 100, 100, fill='blue'), canvas_width, canvas_height))
-    particles[-1].x_pos = 300
-    particles[-1].y_pos = 350
-    id += 1
-
-    particles.append(Particle(id, 'e', canvas.create_oval(50, 50, 100, 100, fill='blue'), canvas_width, canvas_height))
-    particles[-1].x_pos = 310
-    particles[-1].y_pos = 340
-    id += 1
 
 
 def em_interact(p_a, p_b):
