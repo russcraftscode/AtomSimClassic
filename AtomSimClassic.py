@@ -5,6 +5,11 @@ import tkinter as tk
 root = tk.Tk()
 root.title("Particles in Classical Mechanics")
 
+
+CANVAS_WIDTH = 800
+CANVAS_HEIGHT = 500
+cursor_x = CANVAS_WIDTH/2
+cursor_y = CANVAS_HEIGHT/2
 MAX_SPEED = 5
 HEAVY_RADIUS = 3
 MASSIVE_PARTICLE_STRONG_CHARGE = 8
@@ -175,6 +180,13 @@ class Particle:
         self.y_acc += y
 
 
+def user_click(event):
+    global cursor_x
+    global cursor_y
+    cursor_x = event.x
+    cursor_y = event.y
+    print(f"{cursor_x=}, {cursor_y=}")
+
 def delete_all_particles():
     global particles
     for p in particles:
@@ -192,10 +204,10 @@ def add_proton():
         id += 1
     particles.append(Particle(id, 'p',
                               canvas.create_oval(-50, -50, -100, -100, fill='Red'),
-                              canvas_width,
-                              canvas_height))
-    particles[-1].x_pos = canvas_width / 2 + (random.random() - .5) * 50
-    particles[-1].y_pos = canvas_height / 2 + (random.random() - .5) * 50
+                              CANVAS_WIDTH,
+                              CANVAS_HEIGHT))
+    particles[-1].x_pos = cursor_x
+    particles[-1].y_pos = cursor_y
 
 
 def add_electron():
@@ -207,10 +219,10 @@ def add_electron():
         id += 1
     particles.append(Particle(id, 'e',
                               canvas.create_oval(-50, -50, -100, -100, fill='Blue'),
-                              canvas_width,
-                              canvas_height))
-    particles[-1].x_pos = canvas_width / 2 + (random.random() - .5) * 50
-    particles[-1].y_pos = canvas_height / 2 + (random.random() - .5) * 50
+                              CANVAS_WIDTH,
+                              CANVAS_HEIGHT))
+    particles[-1].x_pos = cursor_x
+    particles[-1].y_pos = cursor_y
 
 
 def add_neutron():
@@ -222,25 +234,22 @@ def add_neutron():
         id += 1
     particles.append(Particle(id, 'n',
                               canvas.create_oval(-50, -50, -100, -100, fill='Yellow'),
-                              canvas_width,
-                              canvas_height))
-    particles[-1].x_pos = canvas_width / 2 + (random.random() - .5) * 50
-    particles[-1].y_pos = canvas_height / 2 + (random.random() - .5) * 50
+                              CANVAS_WIDTH,
+                              CANVAS_HEIGHT))
+    particles[-1].x_pos = cursor_x
+    particles[-1].y_pos = cursor_y
 
 
 # make data field at top of window
 info_field = tk.Label(root, justify=tk.LEFT)
 info_field.grid(row=0, column=0, columnspan=5, sticky='w')
 
-# make canvas to display animation
-canvas_width = 800
-canvas_height = 500
-electron_count = 50
-proton_count = 0
-neutron_count = 0
-canvas = tk.Canvas(root, width=canvas_width, height=canvas_height, bg='white')
-#canvas.pack()
+# make canvas to display particles
+canvas = tk.Canvas(root, width=CANVAS_WIDTH, height=CANVAS_HEIGHT, bg='white')
+canvas.bind("<Button-1>", user_click)
 canvas.grid(row=1, column=0, columnspan=5)
+# make cursor to show where new particles will go
+cursor = canvas.create_oval(cursor_x-10, cursor_y-10, cursor_x+10, cursor_y+10)
 
 # make buttons to add particles
 proton_button = tk.Button(root, text="Add Proton", command=add_proton)
@@ -255,13 +264,13 @@ clear_button.grid(row=2, column=0)
 #make controls for physics
 orbital_toggle = tk.Checkbutton(root, text="Simple orbital Model", variable=simple_orbitals,
                                 onvalue=True, offvalue=False)
-orbital_toggle.grid(row=2, column=2)
+orbital_toggle.grid(row=2, column=3)
 orbital_toggle = tk.Checkbutton(root, text="Electrostatic Force", variable=electrostatic_force_active,
                                 onvalue=True, offvalue=False)
-orbital_toggle.grid(row=3, column=2)
+orbital_toggle.grid(row=2, column=2)
 orbital_toggle = tk.Checkbutton(root, text="Strong Force", variable=strong_force_active,
                                 onvalue=True, offvalue=False)
-orbital_toggle.grid(row=4, column=2)
+orbital_toggle.grid(row=3, column=2)
 
 particles = []
 nuclei = []
@@ -372,6 +381,10 @@ def strong_interact(p_a, p_b):
 
 
 def update_particles():
+    #display cursor
+    global cursor
+    canvas.coords(cursor, cursor_x-10, cursor_y-10, cursor_x+10, cursor_y+10)
+
     proton_count = 0
     electron_count = 0
     neutron_count = 0
