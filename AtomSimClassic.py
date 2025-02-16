@@ -206,8 +206,8 @@ def add_proton():
                               canvas.create_oval(-50, -50, -100, -100, fill='Red'),
                               CANVAS_WIDTH,
                               CANVAS_HEIGHT))
-    particles[-1].x_pos = cursor_x
-    particles[-1].y_pos = cursor_y
+    particles[-1].x_pos = cursor_x + random.randint(-3,3)
+    particles[-1].y_pos = cursor_y + random.randint(-3,3)
 
 
 def add_electron():
@@ -221,8 +221,8 @@ def add_electron():
                               canvas.create_oval(-50, -50, -100, -100, fill='Blue'),
                               CANVAS_WIDTH,
                               CANVAS_HEIGHT))
-    particles[-1].x_pos = cursor_x
-    particles[-1].y_pos = cursor_y
+    particles[-1].x_pos = cursor_x + random.randint(-3,3)
+    particles[-1].y_pos = cursor_y + random.randint(-3,3)
 
 
 def add_neutron():
@@ -236,8 +236,8 @@ def add_neutron():
                               canvas.create_oval(-50, -50, -100, -100, fill='Yellow'),
                               CANVAS_WIDTH,
                               CANVAS_HEIGHT))
-    particles[-1].x_pos = cursor_x
-    particles[-1].y_pos = cursor_y
+    particles[-1].x_pos = cursor_x + random.randint(-3,3)
+    particles[-1].y_pos = cursor_y + random.randint(-3,3)
 
 
 # make data field at top of window
@@ -321,6 +321,7 @@ def strong_interact(p_a, p_b):
         dist_x = p_a.x_pos - p_b.x_pos
         dist_y = p_a.y_pos - p_b.y_pos
         distance = math.sqrt(dist_x ** 2 + dist_y ** 2)
+        if distance == 0: return
         norm_x = dist_x / distance
         norm_y = dist_y / distance
 
