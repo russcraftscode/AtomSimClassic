@@ -1,5 +1,6 @@
 # AtomSimClassic
 A simulation of atoms and subatomic particles using classical mechanics.
+![image](https://github.com/user-attachments/assets/52b7d6c5-43a3-459d-a3f0-0b4b2050eff6)
 
 ## Overview
 This program simulates particle interactions in a classical (Newtonian) mechanics.
